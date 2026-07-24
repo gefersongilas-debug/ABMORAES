@@ -77,9 +77,9 @@ export default function Home() {
         <h2 className="section-title">O que você precisa para manter sua operação em movimento</h2>
         <div className="solution-grid">
           <article className="solution-card dark-card">
-            <div><span className="card-number">01</span><h3>Mini hidrojatos completos</h3><p>Equipamentos prontos para desentupimento, limpeza técnica e hidrojateamento profissional.</p><ul><li>Mini Hidro Jato 16,5 HP</li><li>Mini Hidro Jato 25 HP</li><li>Mini Hidro Jato 30 HP</li></ul><a href="#contato">Quero um mini hidrojato <Arrow /></a></div>
+            <div><span className="card-number">01</span><h3>Mini hidrojatos completos</h3><p>Equipamentos prontos para desentupimento, limpeza técnica e hidrojateamento profissional.</p><ul><li>Mini Hidro Jato 16,5 HP</li><li>Mini Hidro Jato 25 HP</li><li>Mini Hidro Jato 35 HP</li></ul><a href="#contato">Quero um mini hidrojato <Arrow /></a></div>
             <div className="product-stage" aria-label="Componentes profissionais AB Moraes">
-              <img className="stage-mini-hidrojato" src="/assets/produto-mini-hidrojato-25hp-recortado.png" alt="Mini Hidro Jato 25 HP Branco" />
+              <img className="stage-mini-hidrojato" src="/assets/minihidro-fotoreal.png" alt="Mini Hidro Jato profissional AB Moraes" />
             </div>
           </article>
           <article className="solution-card light-card">
