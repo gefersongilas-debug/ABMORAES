@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 const WhatsApp = "https://wa.me/5511995407662?text=Olá!%20Quero%20falar%20com%20um%20especialista%20da%20AB%20Moraes.";
 const FORM_WEBHOOK = "https://hook.us1.make.celonis.com/z9uzgc97xf5r92kfxmjh8as8o69gebl4";
@@ -9,6 +9,28 @@ function Arrow() { return <span aria-hidden="true">→</span>; }
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.classList.add("reveal-ready");
+    const elements = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.14 },
+    );
+
+    elements.forEach((element) => observer.observe(element));
+    return () => {
+      observer.disconnect();
+      document.documentElement.classList.remove("reveal-ready");
+    };
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -58,28 +80,23 @@ export default function Home() {
             <p className="hero-lead">A solução certa para o seu equipamento de hidrojateamento, com suporte técnico de quem entende do assunto.</p>
             <a href="#contato" className="button button-primary">Falar com um especialista <Arrow /></a>
           </div>
-          <div className="hero-visual" aria-label="Produtos para hidrojateamento">
-            <div className="hero-fleet hero-mini-hidrojato">
-              <img className="hero-photo" src="/assets/hero-mini-hidrojato.png" alt="Mini hidrojato profissional AB Moraes" />
-            </div>
-          </div>
         </div>
       </section>
 
-      <section className="benefits container">
+      <section className="benefits container" data-reveal>
         <article><span className="benefit-icon">⚙</span><div><h2>Equipamentos profissionais</h2><p>Força e autonomia para operar.</p></div></article>
         <article><span className="benefit-icon">✦</span><div><h2>Peça certa, sem erro</h2><p>Orientação antes da compra.</p></div></article>
         <article><span className="benefit-icon">⌁</span><div><h2>Atendimento rápido</h2><p>Suporte técnico especializado.</p></div></article>
       </section>
 
-      <section className="solutions section container">
+      <section className="solutions section container" data-reveal>
         <p className="eyebrow">SOLUÇÕES PARA O SEU DIA A DIA</p>
         <h2 className="section-title">O que você precisa para manter sua operação em movimento</h2>
         <div className="solution-grid">
           <article className="solution-card dark-card">
             <div><span className="card-number">01</span><h3>Mini hidrojatos completos</h3><p>Equipamentos prontos para desentupimento, limpeza técnica e hidrojateamento profissional.</p><ul><li>Mini Hidro Jato 16,5 HP</li><li>Mini Hidro Jato 25 HP</li><li>Mini Hidro Jato 35 HP</li></ul><a href="#contato">Quero um mini hidrojato <Arrow /></a></div>
             <div className="product-stage" aria-label="Componentes profissionais AB Moraes">
-              <img className="stage-mini-hidrojato" src="/assets/minihidro-fotoreal.png" alt="Mini Hidro Jato profissional AB Moraes" />
+              <img className="stage-mini-hidrojato" src="/assets/foto-v2.png" alt="Mini Hidro Jato profissional AB Moraes" />
             </div>
           </article>
           <article className="solution-card light-card">
@@ -96,14 +113,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="why section">
+      <section className="why section" data-reveal>
         <div className="container why-grid">
           <div><p className="eyebrow">POR QUE A AB MORAES?</p><h2 className="section-title">Você não compra só um produto. Compra confiança para seguir trabalhando.</h2><a className="button button-outline" href={WhatsApp} target="_blank">Falar no WhatsApp <Arrow /></a></div>
           <div className="reasons"><div><b>01</b><p>Equipamentos selecionados para uso profissional.</p></div><div><b>02</b><p>Suporte de quem conhece hidrojateamento.</p></div><div><b>03</b><p>Atendimento ágil e comprometido.</p></div><div><b>04</b><p>Envio para todo o Brasil.</p></div></div>
         </div>
       </section>
 
-      <section className="contact section" id="contato">
+      <section className="contact section" id="contato" data-reveal>
         <div className="container contact-grid">
           <div><p className="eyebrow">VAMOS ENCONTRAR A MELHOR SOLUÇÃO</p><h2 className="section-title">Fale com um especialista</h2><p>Conte o que você precisa. Nossa equipe entra em contato para ajudar na escolha do equipamento ou peça ideal.</p><a className="whatsapp-link" href={WhatsApp} target="_blank">Também atendemos pelo WhatsApp <Arrow /></a></div>
           <form onSubmit={submit} className="form">

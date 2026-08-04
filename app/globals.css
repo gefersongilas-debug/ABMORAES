@@ -42,3 +42,97 @@
 .dark-card .stage-mini-hidrojato{width:88%;height:88%;max-width:88%;max-height:88%;object-fit:contain}
 
 @media(max-width:800px){.dark-card .product-stage{width:min(100%,220px)} }
+
+/* Hero fotográfico, motion e interações da LP. */
+.header{animation:header-in .65s ease-out both}
+.hero{
+  position:relative;
+  isolation:isolate;
+  min-height:610px;
+  background-image:url('/assets/hero-v2.png');
+  background-position:center 57%;
+  background-size:cover;
+  border-top:0;
+}
+.hero::before{
+  content:'';
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  background:
+    linear-gradient(90deg,rgba(4,26,65,.94) 0%,rgba(5,43,104,.86) 40%,rgba(5,43,104,.48) 68%,rgba(4,25,58,.56) 100%),
+    linear-gradient(0deg,rgba(4,25,58,.36),rgba(4,25,58,.08));
+}
+.hero::after{
+  content:'';
+  position:absolute;
+  inset:auto 0 0;
+  height:120px;
+  z-index:-1;
+  background:linear-gradient(0deg,rgba(4,25,58,.48),transparent);
+}
+.hero-grid{min-height:610px;display:flex;align-items:center}
+.hero-copy{position:relative;z-index:1;max-width:675px;padding:86px 0 102px;color:#fff}
+.hero-copy .eyebrow{color:#ff8049;animation:hero-in .7s .12s cubic-bezier(.22,1,.36,1) both}
+.hero h1{max-width:675px;text-shadow:0 3px 24px rgba(0,17,47,.3);animation:hero-in .78s .22s cubic-bezier(.22,1,.36,1) both}
+.hero h1 em{display:inline-block;color:#ff7135;transition:color .25s ease,text-shadow .25s ease,transform .25s ease}
+.hero h1:hover em{color:#ff956a;text-shadow:0 0 24px rgba(255,90,24,.24);transform:translateX(4px)}
+.hero-lead{color:#e6edf8;max-width:555px;animation:hero-in .78s .34s cubic-bezier(.22,1,.36,1) both}
+.hero .button{animation:hero-in .78s .44s cubic-bezier(.22,1,.36,1) both}
+
+.solution-card,.benefits article{transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease}
+.solution-card:hover{transform:translateY(-6px);box-shadow:0 22px 48px rgba(8,43,107,.16)}
+.benefits article:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(8,43,107,.09)}
+.solution-card h3,.benefits h2,.reasons p{transition:color .22s ease}
+.solution-card:hover h3{color:var(--orange)}
+.benefits article:hover h2,.reasons div:hover p{color:var(--blue)}
+.why .reasons div:hover p{color:#fff}
+.solution-card a span,.whatsapp-link span,.button span{display:inline-block;transition:transform .22s ease}
+.solution-card a:hover span,.whatsapp-link:hover span,.button:hover span{transform:translateX(5px)}
+
+.dark-card .product-stage{
+  width:min(100%,340px);
+  height:auto;
+  aspect-ratio:796 / 868;
+  flex:0 0 auto;
+  align-self:center;
+  border-radius:0;
+  overflow:hidden;
+  padding:0;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+.dark-card .stage-mini-hidrojato{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  object-position:center;
+  transition:filter .3s ease;
+}
+.dark-card:hover .stage-mini-hidrojato{filter:drop-shadow(0 14px 16px rgba(0,20,44,.26))}
+
+.reveal-ready [data-reveal]{opacity:0;transform:translateY(28px)}
+.reveal-ready [data-reveal].is-visible{opacity:1;transform:none;transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+
+@keyframes hero-in{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes header-in{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+
+@media(max-width:800px){
+  .hero,.hero-grid{min-height:560px}
+  .hero{background-position:61% center}
+  .hero::before{background:linear-gradient(90deg,rgba(4,26,65,.94),rgba(5,43,104,.78)),linear-gradient(0deg,rgba(4,25,58,.36),transparent)}
+  .hero-copy{padding:74px 0 82px}
+  .hero h1{font-size:clamp(36px,11vw,52px)}
+  .dark-card .product-stage{width:min(100%,300px);height:auto;padding:0}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .header,.hero-copy .eyebrow,.hero h1,.hero-lead,.hero .button{animation:none}
+  .reveal-ready [data-reveal],.reveal-ready [data-reveal].is-visible{opacity:1;transform:none;transition:none}
+  .solution-card,.benefits article,.button,.stage-mini-hidrojato{transition:none!important}
+}
