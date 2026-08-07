@@ -4,13 +4,37 @@ import { FormEvent, useEffect, useState } from "react";
 
 const WhatsApp = "https://wa.me/5511995407662?text=Olá!%20Quero%20falar%20com%20um%20especialista%20da%20AB%20Moraes.";
 const FORM_WEBHOOK = "https://hook.us1.make.celonis.com/z9uzgc97xf5r92kfxmjh8as8o69gebl4";
+const TRACKING_FIELDS = ["utm_source", "utm_campaign", "utm_medium", "utm_content", "utm_term", "gclid"] as const;
+
+type TrackingField = (typeof TRACKING_FIELDS)[number];
+type TrackingData = Record<TrackingField, string>;
+type DataLayerEvent = { event: string };
+
+const emptyTrackingData: TrackingData = {
+  utm_source: "",
+  utm_campaign: "",
+  utm_medium: "",
+  utm_content: "",
+  utm_term: "",
+  gclid: "",
+};
 
 function Arrow() { return <span aria-hidden="true">→</span>; }
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [trackingData, setTrackingData] = useState<TrackingData>(emptyTrackingData);
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const capturedTrackingData = { ...emptyTrackingData };
+
+    TRACKING_FIELDS.forEach((field) => {
+      capturedTrackingData[field] = urlParams.get(field) ?? "";
+    });
+
+    setTrackingData(capturedTrackingData);
+
     document.documentElement.classList.add("reveal-ready");
     const elements = document.querySelectorAll<HTMLElement>("[data-reveal]");
     const observer = new IntersectionObserver(
@@ -32,6 +56,12 @@ export default function Home() {
     };
   }, []);
 
+  function trackFloatingWhatsAppClick() {
+    const windowWithDataLayer = window as typeof window & { dataLayer?: DataLayerEvent[] };
+    windowWithDataLayer.dataLayer = windowWithDataLayer.dataLayer || [];
+    windowWithDataLayer.dataLayer.push({ event: "wpp.flutuante" });
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (isSubmitting) return;
@@ -40,6 +70,9 @@ export default function Home() {
     const name = String(data.get("nome") ?? "");
     const phone = String(data.get("whatsapp") ?? "");
     const interest = String(data.get("interesse") ?? "");
+    const tracking = Object.fromEntries(
+      TRACKING_FIELDS.map((field) => [field, String(data.get(field) ?? "")]),
+    ) as TrackingData;
     const message = `Olá! Meu nome é ${name}. Meu WhatsApp é ${phone} e procuro: ${interest}. Vim pela landing page da AB Moraes.`;
 
     setIsSubmitting(true);
@@ -54,6 +87,7 @@ export default function Home() {
           origem: "Landing page AB Moraes",
           pagina: window.location.href,
           enviadoEm: new Date().toISOString(),
+          ...tracking,
         }),
         keepalive: true,
       });
@@ -125,8 +159,11 @@ export default function Home() {
           <div><p className="eyebrow">VAMOS ENCONTRAR A MELHOR SOLUÇÃO</p><h2 className="section-title">Fale com um especialista</h2><p>Conte o que você precisa. Nossa equipe entra em contato para ajudar na escolha do equipamento ou peça ideal.</p><a className="whatsapp-link" href={WhatsApp} target="_blank">Também atendemos pelo WhatsApp <Arrow /></a></div>
           <form onSubmit={submit} className="form">
             <label>Nome<input required name="nome" placeholder="Como podemos te chamar?" /></label>
-            <label>WhatsApp<input required name="whatsapp" placeholder="(00) 00000-0000" /></label>
+            <label>WhatsApp<input required name="whatsapp" type="tel" inputMode="numeric" autoComplete="tel" maxLength={11} placeholder="DDD + número" onInput={(event) => { event.currentTarget.value = event.currentTarget.value.replace(/\D/g, "").slice(0, 11); }} /></label>
             <label>O que você procura?<select name="interesse" defaultValue=""><option value="" disabled>Selecione uma opção</option><option>Mini hidrojato completo</option><option>Peça de reposição</option><option>Quero tirar uma dúvida</option></select></label>
+            {TRACKING_FIELDS.map((field) => (
+              <input key={field} type="hidden" name={field} value={trackingData[field]} readOnly />
+            ))}
             <button className="button button-primary" type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Enviando..." : <>Quero falar com um especialista <Arrow /></>}
             </button>
@@ -134,7 +171,7 @@ export default function Home() {
         </div>
       </section>
       <footer><div className="container"><img src="/assets/logo.webp" alt="AB Moraes" className="footer-logo"/><span>© {new Date().getFullYear()} AB Moraes Indústria de Equipamentos LTDA</span><a href="https://abmoraes.com.br/" target="_blank">abmoraes.com.br</a></div></footer>
-      <a className="floating-whatsapp" href={WhatsApp} target="_blank" aria-label="Falar pelo WhatsApp">
+      <a className="floating-whatsapp" href={WhatsApp} target="_blank" rel="noopener noreferrer" aria-label="Falar pelo WhatsApp" data-track="wpp-flutuante" onClick={trackFloatingWhatsAppClick}>
         <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.2a12.5 12.5 0 0 0-10.7 19l-1.7 6.6 6.8-1.8A12.5 12.5 0 1 0 16 3.2Zm0 22.7c-1.9 0-3.7-.5-5.2-1.4l-.5-.3-4 1 1-3.9-.3-.5A10.2 10.2 0 1 1 16 25.9Zm5.6-7.6c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1a8.3 8.3 0 0 1-2.5-1.5 9.4 9.4 0 0 1-1.7-2.1c-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-1-2.3c-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.5.1-.8.4s-1 1-1 2.4 1 2.8 1.2 3c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5 0-.2-.3-.3-.6-.5Z" fill="currentColor"/></svg>
       </a>
     </main>
